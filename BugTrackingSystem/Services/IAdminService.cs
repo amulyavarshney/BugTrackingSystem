@@ -5,6 +5,6 @@ namespace BugTrackingSystem.Services
     {
         Task<int> GetBugCountAsync(BugState state);
         Task<int> GetMessageCountAsync();
-        Task<int> GetBugResolutionRateAsync();
+        Task<double> GetBugResolutionRateAsync();
     }
 }
