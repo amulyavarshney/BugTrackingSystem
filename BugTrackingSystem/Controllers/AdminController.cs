@@ -16,31 +16,31 @@ namespace BugTrackingSystem.Controllers
         }
 
         // get Total number of open bugs for all projects
-        [HttpGet("open")]
-        public async Task<int> GetOpenBugsCountAsync()
+        [HttpGet("open-bugs")]
+        public async Task<ActionResult<object>> GetOpenBugsCountAsync()
         {
-            return await _service.GetBugCountAsync(BugState.OPEN);
+            return Ok(new { NumberOfOpenBugs = await _service.GetBugCountAsync(BugState.OPEN) });
         }
 
         // get Total number of resolved bugs for all projects
-        [HttpGet("resolved")]
-        public async Task<int> GetResolvedBugsCountAsync()
+        [HttpGet("resolved-bugs")]
+        public async Task<ActionResult<object>> GetResolvedBugsCountAsync()
         {
-            return await _service.GetBugCountAsync(BugState.RESOLVED);
+            return Ok(new { NumberOfResolvedBugs = await _service.GetBugCountAsync(BugState.RESOLVED) });
         }
 
         // get Total number of messages for all projects
-        [HttpGet("messagecount")]
-        public async Task<int> GetAllMessagesCountAsync()
+        [HttpGet("total-message-count")]
+        public async Task<ActionResult<object>> GetAllMessagesCountAsync()
         {
-            return await _service.GetMessageCountAsync();
+            return Ok(new { TotalMessageCount = await _service.GetMessageCountAsync() });
         }
 
         // get Bug resolution rate (=resolved/total bugs)
-        [HttpGet("resolutionrate")]
-        public async Task<double> GetBugResolutionRateAsync()
+        [HttpGet("resolution-rate")]
+        public async Task<ActionResult<object>> GetBugResolutionRateAsync()
         {
-            return await _service.GetBugResolutionRateAsync();
+            return Ok(new { ResolutionRate = await _service.GetBugResolutionRateAsync() });
         }
     }
 }

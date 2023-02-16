@@ -4,6 +4,7 @@ namespace BugTrackingSystem.ViewModels
 {
     public class BugUpdateViewModel
     {
-        public BugState State { get; set; }
+        public int BugId { get; set; }
+        public BugState Title { get; set; }
     }
 }

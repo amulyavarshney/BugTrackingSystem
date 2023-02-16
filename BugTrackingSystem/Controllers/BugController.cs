@@ -29,11 +29,11 @@ namespace BugTrackingSystem.Controllers
             return Ok(await _service.GetByIdAsync(bugId));
         }
 
-        // create a new message in a bug
-        [HttpPost("{bugId:int}")]
-        public async Task<ActionResult<MessageViewModel>> CreateByIdAsync(int bugId, MessageCreateViewModel message)
+        // create a new bug
+        [HttpPost]
+        public async Task<ActionResult<BugViewModel>> CreateAsync(int projectId, BugCreateViewModel bug)
         {
-            return Ok(await _service.CreateByIdAsync(bugId, message));
+            return Ok(await _service.CreateAsync(projectId, bug));
         }
 
         // update status of bug

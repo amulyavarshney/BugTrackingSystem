@@ -19,6 +19,7 @@ namespace BugTrackingSystem
             builder.Services.AddScoped<IAdminService, AdminService>();
             builder.Services.AddScoped<IProjectService, ProjectService>();
             builder.Services.AddScoped<IBugService, BugService>();
+            builder.Services.AddScoped<IMessageService, MessageService>();
 
             builder.Services.AddSwaggerGen();
 

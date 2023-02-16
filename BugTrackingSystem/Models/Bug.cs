@@ -1,11 +1,5 @@
 ﻿namespace BugTrackingSystem.Models
 {
-    public enum BugState
-    {
-        OPEN,
-        WORKING,
-        RESOLVED
-    }
     public class Bug
     {
         public int BugId { get; set; }

@@ -6,5 +6,6 @@ namespace BugTrackingSystem.Services
     {
         Task<IEnumerable<MessageViewModel>> GetAllAsync();
         Task<MessageViewModel> GetByIdAsync(int bugId);
+        Task<MessageViewModel> CreateAsync(int bugId, MessageCreateViewModel message);
     }
 }

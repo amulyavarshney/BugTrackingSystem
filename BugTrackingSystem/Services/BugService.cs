@@ -1,4 +1,5 @@
 ﻿using BugTrackingSystem.DAL;
+using BugTrackingSystem.Exceptions;
 using BugTrackingSystem.Models;
 using BugTrackingSystem.ViewModels;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,7 @@ namespace BugTrackingSystem.Services
         public async Task<IEnumerable<BugViewModel>> GetAllAsync()
         {
             return await _context.Bugs
+                .Include(bug => bug.Messages)
                 .Select(bug => new BugViewModel
                 {
                     BugId = bug.BugId,
@@ -25,7 +27,7 @@ namespace BugTrackingSystem.Services
                     Messages = bug.Messages.Select(m => new MessageViewModel
                     {
                         MessageId = m.MessageId,
-                        Flag = m.Flag,
+                        IsResolved = m.IsResolved,
                         Text = m.Text,
                     }).ToList(),
                 }).ToListAsync();
@@ -43,49 +45,37 @@ namespace BugTrackingSystem.Services
                 Messages = bug.Messages.Select(m => new MessageViewModel
                 {
                     MessageId = m.MessageId,
-                    Flag = m.Flag,
+                    IsResolved = m.IsResolved,
                     Text = m.Text,
                 }).ToList(),
             };
         }
 
-        // create new message in a bug
-        public async Task<MessageViewModel> CreateByIdAsync(int bugId, MessageCreateViewModel message)
+        public async Task<BugViewModel> CreateAsync(int projectId, BugCreateViewModel bug)
         {
-            var bug = await FromId(bugId);
-            if(bug.State == BugState.RESOLVED)
+            var b = new Bug
             {
-                throw new InvalidOperationException("Bug is already resolved.");
-            }
-            var m = new Message
-            {
-                Text = message.Text,
-                BugId = bugId,
+                Title = bug.Title,
+                ProjectId = projectId,
             };
-            // update State
-            var b = new BugUpdateViewModel { State = BugState.RESOLVED };
-            UpdateAsync(bugId, b);
-
-            await _context.Messages.AddAsync(m);
+            await _context.Bugs.AddAsync(b);
             await _context.SaveChangesAsync();
-            var messageViewModel = new MessageViewModel
-            {
-                MessageId = m.MessageId,
-                Flag = m.Flag,
-                Text = m.Text,
-            };
-            return messageViewModel;
+            return ToViewModel(b);
         }
 
         // update a bug status
         public async Task<BugViewModel> UpdateAsync(int bugId, BugUpdateViewModel bug)
         {
+            if (bugId != bug.BugId)
+            {
+                throw new DomainInvariantException($"Discrepancy in the Bug {bugId} and {bug.BugId}");
+            }
             var b = await FromId(bugId);
             var updatedBug = new Bug
             {
                 BugId = bugId,
                 Title = b.Title,
-                State = bug.State,
+                State = b.State,
                 ProjectId = b.ProjectId,
                 Project = b.Project,
                 Messages = b.Messages,
@@ -107,7 +97,7 @@ namespace BugTrackingSystem.Services
                 .Select(m => new MessageViewModel
                 {
                     MessageId = m.MessageId,
-                    Flag = m.Flag,
+                    IsResolved = m.IsResolved,
                     Text = m.Text,
                 })
                 .ToList();
@@ -118,7 +108,12 @@ namespace BugTrackingSystem.Services
 
         private async Task<Bug> FromId(int id)
         {
-            return await _context.Bugs.FirstAsync(bug => bug.BugId == id);
+            var bugDb = await _context.Bugs.FirstAsync(bug => bug.BugId == id);
+            if (bugDb == null)
+            {
+                throw new RecordNotFoundException($"Could not find the Bug with id: {id}");
+            }
+            return bugDb;
         }
     }
 }

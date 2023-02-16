@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using BugTrackingSystem.Services;
 using BugTrackingSystem.ViewModels;
 
@@ -37,19 +36,12 @@ namespace WebApplication2.Controllers
             return Ok(await _service.CreateAsync(project));
         }
 
-        // create a new bug in a project
-        [HttpPost("{projectId:int}")]
-        public async Task<ActionResult<BugViewModel>> CreateByIdAsync(int projectId, BugCreateViewModel bug)
-        {
-            return Ok(await _service.CreateByIdAsync(projectId, bug));
-        }
-
         // delete a project
         [HttpDelete("{projectId:int}")]
         public async Task<IActionResult> DeleteAsync(int projectId)
         {
             await _service.DeleteAsync(projectId);
-            return NoContent();
+            return Ok();
         }
     }
 }

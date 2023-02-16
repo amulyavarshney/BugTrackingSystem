@@ -2,6 +2,7 @@
 using BugTrackingSystem.DAL;
 using BugTrackingSystem.Models;
 using BugTrackingSystem.ViewModels;
+using BugTrackingSystem.Exceptions;
 
 namespace BugTrackingSystem.Services
 {
@@ -22,7 +23,9 @@ namespace BugTrackingSystem.Services
                 {
                     ProjectId = project.ProjectId,
                     Title = project.Title,
-                    Bugs = project.Bugs.Select(b => new BugViewModel
+                    Bugs = project.Bugs
+                    /*.Include(b => b.Messages)*/
+                    .Select(b => new BugViewModel
                     {
                         BugId = b.BugId,
                         Title = b.Title,
@@ -30,7 +33,7 @@ namespace BugTrackingSystem.Services
                         Messages = b.Messages.Select(m => new MessageViewModel
                         {
                             MessageId = m.MessageId,
-                            Flag = m.Flag,
+                            IsResolved = m.IsResolved,
                             Text = m.Text,
                         }).ToList(),
                     }).ToList(),
@@ -51,20 +54,6 @@ namespace BugTrackingSystem.Services
             await _context.Projects.AddAsync(p);
             await _context.SaveChangesAsync();
             return ToViewModel(p);
-        }
-
-        // create new bug in a project
-        public async Task<BugViewModel> CreateByIdAsync(int projectId, BugCreateViewModel bug)
-        {
-            var project = await FromId(projectId);
-            var b = new Bug
-            {
-                Title = bug.Title,
-                ProjectId = projectId,
-            };
-            await _context.Bugs.AddAsync(b);
-            await _context.SaveChangesAsync();
-            return ToBugViewModel(b);
         }
 
         // delete a project
@@ -103,7 +92,7 @@ namespace BugTrackingSystem.Services
                 .Select(m => new MessageViewModel
                 {
                     MessageId = m.MessageId,
-                    Flag = m.Flag,
+                    IsResolved = m.IsResolved,
                     Text = m.Text,
                 })
                 .ToList();
@@ -120,7 +109,12 @@ namespace BugTrackingSystem.Services
         }
         private async Task<Project> FromId(int id)
         {
-            return await _context.Projects.Include(project => project.Bugs).FirstAsync(project => project.ProjectId == id);
+            var projectDb = await _context.Projects.Include(project => project.Bugs).FirstAsync(project => project.ProjectId == id);
+            if(projectDb == null)
+            {
+                throw new RecordNotFoundException($"Could not find the Project with id: {id}");
+            }
+            return projectDb;
         }
     }
 }
