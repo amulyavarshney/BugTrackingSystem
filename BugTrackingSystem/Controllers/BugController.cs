@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using BugTrackingSystem.Services;
 using BugTrackingSystem.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BugTrackingSystem.Controllers
 {
+    [Authorize(Policy = "User")]
     [Route("api/v1/[controller]")]
     [ApiController]
     public class BugController : ControllerBase

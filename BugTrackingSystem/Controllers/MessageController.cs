@@ -1,9 +1,11 @@
 ﻿using BugTrackingSystem.Services;
 using BugTrackingSystem.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BugTrackingSystem.Controllers
 {
+    [Authorize(Policy = "User")]
     [Route("api/v1/[controller]")]
     [ApiController]
     public class MessageController : ControllerBase

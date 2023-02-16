@@ -1,9 +1,11 @@
 ﻿using BugTrackingSystem.Models;
 using BugTrackingSystem.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BugTrackingSystem.Controllers
 {
+    [Authorize(Policy = "Admin")]
     [Route("api/v1/[controller]")]
     [ApiController]
     public class AdminController : ControllerBase

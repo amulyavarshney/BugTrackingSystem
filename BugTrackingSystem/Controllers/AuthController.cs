@@ -1,11 +1,11 @@
 ﻿using BugTrackingSystem.Services;
 using BugTrackingSystem.ViewModels;
-using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BugTrackingSystem.Controllers
 {
-    [Microsoft.AspNetCore.Mvc.Route("api/v1/auth")]
+    [Route("api/v1/auth")]
     [ApiController]
     public class AuthController : ControllerBase
     {

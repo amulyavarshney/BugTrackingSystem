@@ -8,6 +8,6 @@
         public string AvatarUrl { get; set; }
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
-        public IList<UserRole> UserRoles { get; set; }
+        public IList<UserRole> UserRoles { get; set; } = new List<UserRole>();
     }
 }

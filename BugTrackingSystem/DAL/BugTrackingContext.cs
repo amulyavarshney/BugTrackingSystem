@@ -20,7 +20,7 @@ namespace BugTrackingSystem.DAL
             modelBuilder.Entity<Message>().ToTable(nameof(Message));
             modelBuilder.Entity<User>().ToTable(nameof(User));
             modelBuilder.Entity<Role>().ToTable(nameof(Role));
-            modelBuilder.Entity<UserRole>().HasKey(ur => new { ur.UserId, ur.RoleId });
+            modelBuilder.Entity<UserRole>().ToTable(nameof(UserRole)).HasKey(ur => new { ur.UserId, ur.RoleId });
         }
     }
 }
